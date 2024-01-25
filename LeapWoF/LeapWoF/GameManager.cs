@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using LeapWoF.Interfaces;
 
 namespace LeapWoF
@@ -71,7 +73,29 @@ namespace LeapWoF
         }
         public void StartNewRound()
         {
-            TemporaryPuzzle = "Hello world";
+            Random rnd = new Random();
+
+            var subjects = new string[] { "I", "You", "Kim", "Shruthi", "Josh", "Andrea", "People", "We", "They", "Mary" };
+            var verbs = new string[]
+            {
+                  "will search for", "will get", "will find", "attained", "found", "will start interacting with",
+                    "will accept", "accepted", "loved", "will paint"
+            };
+            var objects = new string[] 
+            { 
+                "an offer", "an apple", "a car","an orange", "the treasure", "a surface", "snow", 
+                "alligators", "good code", "dogs", "cookies", "foxes", "aubergines", "zebras" 
+            };
+
+            int r = rnd.Next(subjects.Length);
+            var randomSubject = subjects[r];
+            r = rnd.Next(verbs.Length);
+            var randomVerb = verbs[r];
+            r = rnd.Next(objects.Length);
+            var randomObject = objects[r];
+
+            TemporaryPuzzle =  $"{randomSubject} {randomVerb} {randomObject} .";
+ 
 
             // update the game state
             GameState = GameState.RoundStarted;
