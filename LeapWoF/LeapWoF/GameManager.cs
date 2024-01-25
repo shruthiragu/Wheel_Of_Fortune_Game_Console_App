@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using LeapWoF.Interfaces;
 
@@ -24,6 +25,7 @@ namespace LeapWoF
         private IOutputProvider outputProvider;
 
         private string TemporaryPuzzle;
+        private string DisplayTemporaryPuzzle;
         public List<string> charGuessList = new List<string>();
 
         public GameState GameState { get; private set; }
@@ -95,7 +97,24 @@ namespace LeapWoF
             var randomObject = objects[r];
 
             TemporaryPuzzle =  $"{randomSubject} {randomVerb} {randomObject} .";
- 
+
+            string space = " ";
+            string DisplayTemporaryPuzzle = "";
+            foreach (char i in TemporaryPuzzle)
+            {
+                if (space.Contains(i))
+                {
+                    DisplayTemporaryPuzzle += " ";
+                }
+                else
+                {
+                    DisplayTemporaryPuzzle += "-";
+                }
+            }
+
+
+
+
 
             // update the game state
             GameState = GameState.RoundStarted;
