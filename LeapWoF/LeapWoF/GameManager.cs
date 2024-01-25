@@ -133,7 +133,8 @@ namespace LeapWoF
                 //Get first location of guessed letter
                 var pos = TemporaryPuzzle.IndexOf(guess);
                 //Replace underscore with matching letters
-                ChallengePhrase = ChallengePhrase.Substring(0, pos) + guess + ChallengePhrase.Substring(pos + 1);                
+                ChallengePhrase = ChallengePhrase.Substring(0, pos) + guess + ChallengePhrase.Substring(pos + 1);
+                outputProvider.WriteLine("Your guess is correct! Here is the updated challenge phrase: " + ChallengePhrase);
                 charGuessList.Add(guess);
             }
             else
