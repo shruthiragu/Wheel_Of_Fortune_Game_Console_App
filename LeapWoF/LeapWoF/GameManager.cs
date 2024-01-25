@@ -23,6 +23,7 @@ namespace LeapWoF
 
         private string TemporaryPuzzle;
         public List<string> charGuessList = new List<string>();
+        private string ChallengePhrase = "H_l_o W_r_d";
 
         public GameState GameState { get; private set; }
 
@@ -71,7 +72,7 @@ namespace LeapWoF
         }
         public void StartNewRound()
         {
-            TemporaryPuzzle = "Hello world";
+            TemporaryPuzzle = "Hello world";            
 
             // update the game state
             GameState = GameState.RoundStarted;
@@ -127,7 +128,20 @@ namespace LeapWoF
         {
             outputProvider.Write("Please guess a letter: ");
             var guess = inputProvider.Read();
-            charGuessList.Add(guess);
+            if(TemporaryPuzzle.Contains(guess))
+            {
+                //Get first location of guessed letter
+                var pos = TemporaryPuzzle.IndexOf(guess);
+                //Replace underscore with matching letters
+                ChallengePhrase = ChallengePhrase.Substring(0, pos) + guess + ChallengePhrase.Substring(pos + 1);                
+                charGuessList.Add(guess);
+            }
+            else
+            {
+                //If letter is not in word, let player know and keep playing
+                outputProvider.WriteLine("Hard luck, try again!");
+            }
+            
         }
 
         /// <summary>
