@@ -153,8 +153,10 @@ namespace LeapWoF
         /// </summary>
         private void DrawPuzzle()
         {
+            ShowLogo();
+            outputProvider.WriteLine();
             outputProvider.WriteLine("The puzzle is:");
-           // outputProvider.WriteLine(TemporaryPuzzle);
+            // outputProvider.WriteLine(TemporaryPuzzle);
             outputProvider.WriteLine(ChallengePhrase);
             outputProvider.WriteLine();
         }
@@ -273,8 +275,35 @@ namespace LeapWoF
         public void InitGame()
         {
 
+            ShowLogo();
+            outputProvider.WriteLine();
             outputProvider.WriteLine("Welcome to Wheel of Fortune!");
+            outputProvider.WriteLine("Press any key to start...");
+            inputProvider.Read();
             StartNewRound();
         }
+
+        public static void ShowLogo()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(" _       _ _                 __       _____   ___");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("( )  _  ( ) )               (  )     (  _  )/ ___)");
+            Console.WriteLine("| | ( ) | | |__    __    __  | |     | ( ) | (__");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("| | | | | |  _  \\/ __ \\/ __ \\| |     | | | |  __)");
+            Console.WriteLine("| (_/ \\_) | | | |  ___/  ___/| |     | (_) | |");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(" \\__/\\___/(_) (_)\\____)\\____)___)    (_____)_)");
+            Console.WriteLine("      ___              _");
+            Console.WriteLine("     (  _ \\           ( )_");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("     | (_(_)  _   _ __|  _)_   _  ___    __");
+            Console.WriteLine("     |  _)  / _ \\(  __) | ( ) ( )  _  \\/ __ \\");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("     | |   ( (_) ) |  | |_| (_) | ( ) |  ___/");
+            Console.WriteLine("     (_)    \\___/(_)   \\__)\\___/(_) (_)\\____)");
+            Console.ResetColor();
+        }
+        }
     }
-}
