@@ -83,16 +83,16 @@ namespace LeapWoF
             Random rnd = new Random();
 
             // Sentence is created from three elements that are randomly selected from different arrays.
-            var subjects = new string[] { "I", "You", "Kim", "Shruthi", "Josh", "Andrea", "People", "We", "They", "Mary" };
+            var subjects = new string[] { "I", "YOU", "KIM", "SHRUTI", "JOSH", "ANDREA", "PEOPLE", "WE", "THEY", "MARY" };
             var verbs = new string[]
             {
-                  "will search for", "will get", "will find", "attained", "found", "will start interacting with",
-                    "will accept", "accepted", "loved", "will paint"
+                  "WILL SEARCH FOR", "WILL GET", "EILL FIND", "ATTAINED", "FOUND", "WILL START INTERACTING",
+                    "WILL ACCEPT", "ACCEPTED", "LOVED", "WILL PAINT"
             };
             var objects = new string[] 
             { 
-                "an offer", "an apple", "a car","an orange", "the treasure", "a surface", "snow", 
-                "alligators", "good code", "dogs", "cookies", "foxes", "aubergines", "zebras" 
+                "AN OFFER", "AN APPLE", "A CAR", "AN ORANGE", "A TREASURE", "A SURFACE", "SNOW", 
+                "ALLIGATORS", "GOOD CODE", "A DOG", "COOKIES", "FOXES", "AUBERGINES", "ZEBRAS" 
             };
 
             // r is the index randomly selected from the sequence of the lenght of the array
