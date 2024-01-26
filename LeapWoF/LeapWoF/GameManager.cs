@@ -24,8 +24,8 @@ namespace LeapWoF
         /// </summary>
         private IOutputProvider outputProvider;
 
+        public string ChallengePhrase;
         private string TemporaryPuzzle;
-        private string DisplayTemporaryPuzzle;
         public List<string> charGuessList = new List<string>();
 
         public GameState GameState { get; private set; }
@@ -105,21 +105,18 @@ namespace LeapWoF
 
             // This logic replaces with a "-" every char from the sentence except for the space.
             string space = " ";
-            string DisplayTemporaryPuzzle = "";
+            string ChallengePhrase = "";
             foreach (char i in TemporaryPuzzle)
             {
                 if (space.Contains(i))
                 {
-                    DisplayTemporaryPuzzle += " ";
+                    ChallengePhrase += " ";
                 }
                 else
                 {
-                    DisplayTemporaryPuzzle += "-";
+                    ChallengePhrase += "-";
                 }
             }
-
-
-
 
 
             // update the game state
@@ -153,7 +150,7 @@ namespace LeapWoF
         private void DrawPuzzle()
         {
             outputProvider.WriteLine("The puzzle is:");
-            outputProvider.WriteLine(DisplayTemporaryPuzzle);
+            outputProvider.WriteLine(ChallengePhrase);
             outputProvider.WriteLine();
         }
 
