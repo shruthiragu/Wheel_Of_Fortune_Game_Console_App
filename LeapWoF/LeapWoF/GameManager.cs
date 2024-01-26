@@ -172,8 +172,56 @@ namespace LeapWoF
         public void GuessLetter()
         {
             outputProvider.Write("Please guess a letter: ");
-            var guess = inputProvider.Read();
-            charGuessList.Add(guess);
+            var guessedInput = inputProvider.Read();
+
+            //Take only the first character from the guessed input
+            string guess = guessedInput.Substring(0, 1);
+            outputProvider.WriteLine($"Guessed Letter is: {guess}");
+            if (!charGuessList.Contains(guess))
+            {
+                if (TemporaryPuzzle.Contains(guess))
+                {
+                    //Get all locations of guessed letter
+                    var posList = GetAllIndicesOfGuessedLetterInChallengePhrase(guess);
+                    
+                    //Replace underscore with matching letters
+                    foreach (var pos in posList)
+                    {
+                        ChallengePhrase = ChallengePhrase.Substring(0, pos) + guess + ChallengePhrase.Substring(pos + 1);
+                        outputProvider.WriteLine("Here is the updated challenge phrase: " + ChallengePhrase);
+                    }                    
+                    charGuessList.Add(guess);
+                }
+                else
+                {
+                    //If letter is not in word, let player know and keep playing
+                    outputProvider.WriteLine("Hard luck, try again!");
+                }
+            } else
+            {
+                outputProvider.WriteLine("You have already guessed that letter! Please try again.");
+            }
+            
+        }
+
+        private List<int> GetAllIndicesOfGuessedLetterInChallengePhrase(string guess)
+        {
+            int start = 0;
+            int end = ChallengePhrase.Length - 1;
+            int at = 0;
+            int count = 0;
+            var posList = new List<int>();
+            while ((start <= end) && (at > -1))
+            {
+                // start+count must be a position within the string
+                count = end - start;
+                at = ChallengePhrase.IndexOf(guess, start, count);
+                if (at == -1) break;
+                //Debug: Console.Write("{0} ", at);
+                posList.Add(at);
+                start = at + 1;
+            }
+            return posList;
         }
 
         /// <summary>
