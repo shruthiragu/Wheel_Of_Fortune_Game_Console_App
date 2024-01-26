@@ -109,7 +109,7 @@ namespace LeapWoF
 
             // This logic replaces with a "-" every char from the sentence except for the space.
             string space = " ";
-            string ChallengePhrase = "";
+            ChallengePhrase = "";
             foreach (char i in TemporaryPuzzle)
             {
                 if (space.Contains(i))
@@ -154,6 +154,7 @@ namespace LeapWoF
         private void DrawPuzzle()
         {
             outputProvider.WriteLine("The puzzle is:");
+            outputProvider.WriteLine(TemporaryPuzzle);
             outputProvider.WriteLine(ChallengePhrase);
             outputProvider.WriteLine();
         }
@@ -249,7 +250,7 @@ namespace LeapWoF
         private List<int> GetAllIndicesOfGuessedLetterInChallengePhrase(string guess)
         {
             int start = 0;
-            int end = ChallengePhrase.Length;
+            int end = TemporaryPuzzle.Length;
             int at = 0;
             int count = 0;
             var posList = new List<int>();
