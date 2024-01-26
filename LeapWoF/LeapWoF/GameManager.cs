@@ -25,9 +25,11 @@ namespace LeapWoF
         private string TemporaryPuzzle;
         public List<string> charGuessList = new List<string>();
         private string ChallengePhrase = "H_l_o W_r_d";
+        private int PrizeMoney = 0;
         
 
         public GameState GameState { get; private set; }
+        public SpinState SpinState { get; private set; }
 
         public GameManager() : this(new ConsoleInputProvider(), new ConsoleOutputProvider())
         {
@@ -84,6 +86,7 @@ namespace LeapWoF
         {
             outputProvider.Clear();
             DrawPuzzle();
+            outputProvider.WriteLine($"Your current prize money is ${PrizeMoney}!");
             outputProvider.WriteLine("Type 1 to spin, 2 to solve");
             GameState = GameState.WaitingForUserInput;
 
@@ -118,7 +121,23 @@ namespace LeapWoF
         {
             outputProvider.WriteLine("Spinning the wheel...");
             //TODO - Implement wheel + possible wheel spin outcomes
-            GuessLetter();
+            Random rnd = new Random();    
+            int spinPosition = rnd.Next(0, 6); // creates a number between 0 and 6
+            var spinValue = (SpinState)spinPosition;
+            outputProvider.WriteLine($"The spinning wheel has landed in {spinValue}");
+
+            switch (spinPosition)
+            {
+                case 4:
+                    outputProvider.WriteLine("You just lost your current turn. Please try again!");
+                    GameState = GameState.WaitingForUserInput;
+                    break;
+                case 5:
+                    outputProvider.WriteLine("Bankrupt!");
+                    PrizeMoney = 0;
+                    break;                    
+            }
+            GuessLetter(spinPosition);
         }
 
         public void Solve()
@@ -126,8 +145,13 @@ namespace LeapWoF
             outputProvider.Write("Please enter your solution:");
             var guess = inputProvider.Read();
         }
-        public void GuessLetter()
+        public void GuessLetter(int spinPosition)
         {
+            if(spinPosition > 3)
+            {
+                outputProvider.WriteLine("You just lost your turn or you went bankrupt. Try again!");
+                return;
+            }
             outputProvider.Write("Please guess a letter: ");
             var guessedInput = inputProvider.Read();
 
@@ -138,6 +162,7 @@ namespace LeapWoF
             {
                 if (TemporaryPuzzle.Contains(guess))
                 {
+                    outputProvider.WriteLine("Good guess!!");
                     //Get all locations of guessed letter
                     var posList = GetAllIndicesOfGuessedLetterInChallengePhrase(guess);
                     
@@ -146,7 +171,18 @@ namespace LeapWoF
                     {
                         ChallengePhrase = ChallengePhrase.Substring(0, pos) + guess + ChallengePhrase.Substring(pos + 1);
                         outputProvider.WriteLine("Here is the updated challenge phrase: " + ChallengePhrase);
-                    }                    
+                    }
+                    switch (spinPosition)
+                    {
+                        case 0:
+                            PrizeMoney += 10; break;
+                        case 1:
+                            PrizeMoney += 100; break;
+                        case 2:
+                            PrizeMoney += 500; break;
+                        case 3:
+                            PrizeMoney += 1000; break;
+                    }
                     charGuessList.Add(guess);
                 }
                 else
