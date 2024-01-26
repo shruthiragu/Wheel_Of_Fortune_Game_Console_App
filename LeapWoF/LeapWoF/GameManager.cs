@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using LeapWoF.Interfaces;
 
 namespace LeapWoF
@@ -22,10 +24,9 @@ namespace LeapWoF
         /// </summary>
         private IOutputProvider outputProvider;
 
+        public string ChallengePhrase;
         private string TemporaryPuzzle;
         public List<string> charGuessList = new List<string>();
-        private string ChallengePhrase = "H_l_o W_r_d";
-        
 
         public GameState GameState { get; private set; }
 
@@ -74,7 +75,49 @@ namespace LeapWoF
         }
         public void StartNewRound()
         {
-            TemporaryPuzzle = "Hello world";            
+            //Library to random pick an element from an array
+            Random rnd = new Random();
+
+            // Sentence is created from three elements that are randomly selected from different arrays.
+            var subjects = new string[] { "I", "You", "Kim", "Shruthi", "Josh", "Andrea", "People", "We", "They", "Mary" };
+            var verbs = new string[]
+            {
+                  "will search for", "will get", "will find", "attained", "found", "will start interacting with",
+                    "will accept", "accepted", "loved", "will paint"
+            };
+            var objects = new string[] 
+            { 
+                "an offer", "an apple", "a car","an orange", "the treasure", "a surface", "snow", 
+                "alligators", "good code", "dogs", "cookies", "foxes", "aubergines", "zebras" 
+            };
+
+            // r is the index randomly selected from the sequence of the lenght of the array
+            int r = rnd.Next(subjects.Length);
+            var randomSubject = subjects[r];
+            // r is recalculate to avoid the same index element is taken from different arrays and also because arrays have different lenghts.
+            r = rnd.Next(verbs.Length);
+            var randomVerb = verbs[r];
+            r = rnd.Next(objects.Length);
+            var randomObject = objects[r];
+
+            // This is the sentence to be guessed
+            TemporaryPuzzle =  $"{randomSubject} {randomVerb} {randomObject}";
+
+            // This logic replaces with a "-" every char from the sentence except for the space.
+            string space = " ";
+            string ChallengePhrase = "";
+            foreach (char i in TemporaryPuzzle)
+            {
+                if (space.Contains(i))
+                {
+                    ChallengePhrase += " ";
+                }
+                else
+                {
+                    ChallengePhrase += "-";
+                }
+            }
+
 
             // update the game state
             GameState = GameState.RoundStarted;
@@ -107,7 +150,7 @@ namespace LeapWoF
         private void DrawPuzzle()
         {
             outputProvider.WriteLine("The puzzle is:");
-            outputProvider.WriteLine(TemporaryPuzzle);
+            outputProvider.WriteLine(ChallengePhrase);
             outputProvider.WriteLine();
         }
 
