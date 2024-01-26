@@ -21,10 +21,13 @@ namespace LeapWoF
         /// </summary>
         private IOutputProvider outputProvider;
 
-        private string TemporaryPuzzle;
+        //private string TemporaryPuzzle;  // JOSH: Commented TemporaryPuzzle out to use new currentPuzzle variable instead
         public List<string> charGuessList = new List<string>();
 
         public GameState GameState { get; private set; }
+
+        private string currentPuzzle; // JOSH: New property to store the current puzzle phrase
+        private string solution; // JOSH: New property to store the solution to the puzzle
 
         public GameManager() : this(new ConsoleInputProvider(), new ConsoleOutputProvider())
         {
@@ -71,7 +74,9 @@ namespace LeapWoF
         }
         public void StartNewRound()
         {
-            TemporaryPuzzle = "Hello world";
+            //TemporaryPuzzle = "Hello world"; // JOSH: Commented TemporaryPuzzle out to use new currentPuzzle variable instead
+            currentPuzzle = "Hello world"; // JOSH: Set the current puzzle phrase
+            solution = "Hello world"; // JOSH: Set the solution to the puzzle
 
             // update the game state
             GameState = GameState.RoundStarted;
@@ -104,7 +109,8 @@ namespace LeapWoF
         private void DrawPuzzle()
         {
             outputProvider.WriteLine("The puzzle is:");
-            outputProvider.WriteLine(TemporaryPuzzle);
+            //outputProvider.WriteLine(TemporaryPuzzle); // JOSH: Commented TemporaryPuzzle out to use new currentPuzzle variable instead
+            outputProvider.WriteLine(currentPuzzle); // JOSH: Print the current puzzle phrase
             outputProvider.WriteLine();
         }
 
@@ -121,7 +127,32 @@ namespace LeapWoF
         public void Solve()
         {
             outputProvider.Write("Please enter your solution:");
+            outputProvider.WriteLine();
             var guess = inputProvider.Read();
+            // JOSH: Check if the guess is correct
+            if (string.Equals(guess, solution, StringComparison.OrdinalIgnoreCase))
+            {
+                outputProvider.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Green;
+                outputProvider.WriteLine("Congratulations, you've solved the puzzle!");
+                System.Threading.Thread.Sleep(1500);
+                Console.ResetColor();
+                outputProvider.WriteLine();
+                GameState = GameState.GameOver;
+            }
+            else
+            {
+                outputProvider.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
+                outputProvider.WriteLine("Sorry, but that's not the correct solution.");
+                Console.ResetColor();
+                outputProvider.WriteLine();
+
+                outputProvider.WriteLine("Press any key to try again...");
+                inputProvider.Read();
+
+                // Future enhancement: add logic for changing to next player's turn
+            }
         }
         public void GuessLetter()
         {
