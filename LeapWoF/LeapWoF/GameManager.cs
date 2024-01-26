@@ -31,6 +31,9 @@ namespace LeapWoF
 
         public GameState GameState { get; private set; }
 
+        private string currentPuzzle; // JOSH: New property to store the current puzzle phrase
+        private string solution; // JOSH: New property to store the solution to the puzzle
+
         public GameManager() : this(new ConsoleInputProvider(), new ConsoleOutputProvider())
         {
 
@@ -168,8 +171,32 @@ namespace LeapWoF
         public void Solve()
         {
             outputProvider.Write("Please enter your solution:");
+            outputProvider.WriteLine();
             var guess = inputProvider.Read();
-            GuessLetter();
+            // JOSH: Check if the guess is correct
+            if (string.Equals(guess, solution, StringComparison.OrdinalIgnoreCase))
+            {
+                outputProvider.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Green;
+                outputProvider.WriteLine("Congratulations, you've solved the puzzle!");
+                System.Threading.Thread.Sleep(1500);
+                Console.ResetColor();
+                outputProvider.WriteLine();
+                GameState = GameState.GameOver;
+            }
+            else
+            {
+                outputProvider.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
+                outputProvider.WriteLine("Sorry, but that's not the correct solution.");
+                Console.ResetColor();
+                outputProvider.WriteLine();
+
+                outputProvider.WriteLine("Press any key to try again...");
+                inputProvider.Read();
+
+                // Future enhancement: add logic for changing to next player's turn
+            }
         }
         public void GuessLetter()
         {
