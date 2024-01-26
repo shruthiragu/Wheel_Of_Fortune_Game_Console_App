@@ -154,7 +154,7 @@ namespace LeapWoF
         private void DrawPuzzle()
         {
             outputProvider.WriteLine("The puzzle is:");
-            outputProvider.WriteLine(TemporaryPuzzle);
+           // outputProvider.WriteLine(TemporaryPuzzle);
             outputProvider.WriteLine(ChallengePhrase);
             outputProvider.WriteLine();
         }
