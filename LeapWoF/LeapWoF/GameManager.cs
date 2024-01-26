@@ -172,7 +172,7 @@ namespace LeapWoF
             outputProvider.Write("Please enter your solution:");
             outputProvider.WriteLine();
             var guess = inputProvider.Read();
-            // JOSH: Check if the guess is correct
+            solution = TemporaryPuzzle;
             if (string.Equals(guess, solution, StringComparison.OrdinalIgnoreCase))
             {
                 outputProvider.WriteLine();
@@ -188,6 +188,7 @@ namespace LeapWoF
                 outputProvider.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Red;
                 outputProvider.WriteLine("Sorry, but that's not the correct solution.");
+                System.Threading.Thread.Sleep(1500);
                 Console.ResetColor();
                 outputProvider.WriteLine();
 
