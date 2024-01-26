@@ -26,7 +26,8 @@ namespace LeapWoF
 
         public string ChallengePhrase;
         private string TemporaryPuzzle;
-        public List<string> charGuessList = new List<string>();
+        public List<string> charGuessList = new List<string>();        
+        
 
         public GameState GameState { get; private set; }
 
@@ -134,7 +135,7 @@ namespace LeapWoF
             GameState = GameState.WaitingForUserInput;
 
             var action = inputProvider.Read();
-
+  
             switch (action)
             {
                 case "1":
@@ -206,9 +207,10 @@ namespace LeapWoF
             //Take only the first character from the guessed input
             string guess = guessedInput.Substring(0, 1);
             outputProvider.WriteLine($"Guessed Letter is: {guess}");
+            guess = guess.ToUpper();
             if (!charGuessList.Contains(guess))
-            {
-                if (TemporaryPuzzle.Contains(guess))
+            {               
+              if (TemporaryPuzzle.Contains(guess))
                 {
                     //Get all locations of guessed letter
                     var posList = GetAllIndicesOfGuessedLetterInChallengePhrase(guess);
@@ -218,17 +220,28 @@ namespace LeapWoF
                     {
                         ChallengePhrase = ChallengePhrase.Substring(0, pos) + guess + ChallengePhrase.Substring(pos + 1);
                         outputProvider.WriteLine("Here is the updated challenge phrase: " + ChallengePhrase);
-                    }                    
+                    }
+                    if (string.Equals(ChallengePhrase, TemporaryPuzzle, StringComparison.OrdinalIgnoreCase))
+                    {
+                        outputProvider.WriteLine("Congratulations!!! You won!");
+                        GameState = GameState.GameOver;
+                    }
                     charGuessList.Add(guess);
+                    outputProvider.WriteLine("Press any key to continue...");
+                    inputProvider.Read();
                 }
                 else
                 {
                     //If letter is not in word, let player know and keep playing
                     outputProvider.WriteLine("Hard luck, try again!");
+                    outputProvider.WriteLine("Press any key to continue...");
+                    inputProvider.Read();
                 }
             } else
             {
                 outputProvider.WriteLine("You have already guessed that letter! Please try again.");
+                outputProvider.WriteLine("Press any key to continue...");
+                inputProvider.Read();
             }
             
         }
@@ -236,7 +249,7 @@ namespace LeapWoF
         private List<int> GetAllIndicesOfGuessedLetterInChallengePhrase(string guess)
         {
             int start = 0;
-            int end = ChallengePhrase.Length - 1;
+            int end = ChallengePhrase.Length;
             int at = 0;
             int count = 0;
             var posList = new List<int>();
@@ -244,7 +257,7 @@ namespace LeapWoF
             {
                 // start+count must be a position within the string
                 count = end - start;
-                at = ChallengePhrase.IndexOf(guess, start, count);
+                at = TemporaryPuzzle.IndexOf(guess, start, count);
                 if (at == -1) break;
                 //Debug: Console.Write("{0} ", at);
                 posList.Add(at);
