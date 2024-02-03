@@ -26,8 +26,8 @@ namespace LeapWoF
 
         public string ChallengePhrase;
         private string TemporaryPuzzle;
-        public List<string> charGuessList = new List<string>();        
-        
+        public List<string> charGuessList = new List<string>();
+
 
         public GameState GameState { get; private set; }
 
@@ -83,16 +83,16 @@ namespace LeapWoF
             Random rnd = new Random();
 
             // Sentence is created from three elements that are randomly selected from different arrays.
-            var subjects = new string[] { "I", "YOU", "KIM", "SHRUTI", "JOSH", "ANDREA", "PEOPLE", "WE", "THEY", "MARY" };
+            var subjects = new string[] { "I", "YOU", "KIM", "SHRUTHI", "JOSH", "ANDREA", "PEOPLE", "WE", "THEY", "MARY" };
             var verbs = new string[]
             {
-                  "WILL SEARCH FOR", "WILL GET", "EILL FIND", "ATTAINED", "FOUND", "WILL START INTERACTING",
+                  "WILL SEARCH FOR", "WILL GET", "WILL FIND", "ATTAINED", "FOUND", "WILL START INTERACTING",
                     "WILL ACCEPT", "ACCEPTED", "LOVED", "WILL PAINT"
             };
-            var objects = new string[] 
-            { 
-                "AN OFFER", "AN APPLE", "A CAR", "AN ORANGE", "A TREASURE", "A SURFACE", "SNOW", 
-                "ALLIGATORS", "GOOD CODE", "A DOG", "COOKIES", "FOXES", "AUBERGINES", "ZEBRAS" 
+            var objects = new string[]
+            {
+                "AN OFFER", "AN APPLE", "A CAR", "AN ORANGE", "A TREASURE", "A SURFACE", "SNOW",
+                "ALLIGATORS", "GOOD CODE", "A DOG", "COOKIES", "FOXES", "AUBERGINES", "ZEBRAS"
             };
 
             // r is the index randomly selected from the sequence of the lenght of the array
@@ -105,7 +105,7 @@ namespace LeapWoF
             var randomObject = objects[r];
 
             // This is the sentence to be guessed
-            TemporaryPuzzle =  $"{randomSubject} {randomVerb} {randomObject}";
+            TemporaryPuzzle = $"{randomSubject} {randomVerb} {randomObject}";
 
             // This logic replaces with a "-" every char from the sentence except for the space.
             string space = " ";
@@ -135,7 +135,7 @@ namespace LeapWoF
             GameState = GameState.WaitingForUserInput;
 
             var action = inputProvider.Read();
-  
+
             switch (action)
             {
                 case "1":
@@ -143,6 +143,16 @@ namespace LeapWoF
                     break;
                 case "2":
                     Solve();
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    outputProvider.WriteLine("Please enter a valid option to either spin or solve the puzzle.");
+                    System.Threading.Thread.Sleep(750);
+                    Console.ResetColor();
+                    outputProvider.WriteLine();
+
+                    outputProvider.WriteLine("Press any key to try again...");
+                    inputProvider.Read();
                     break;
             }
 
@@ -182,7 +192,7 @@ namespace LeapWoF
                 outputProvider.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Green;
                 outputProvider.WriteLine("Congratulations, you've solved the puzzle!");
-                System.Threading.Thread.Sleep(1500);
+                System.Threading.Thread.Sleep(750);
                 Console.ResetColor();
                 outputProvider.WriteLine();
                 GameState = GameState.GameOver;
@@ -192,7 +202,7 @@ namespace LeapWoF
                 outputProvider.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Red;
                 outputProvider.WriteLine("Sorry, but that's not the correct solution.");
-                System.Threading.Thread.Sleep(1500);
+                System.Threading.Thread.Sleep(750);
                 Console.ResetColor();
                 outputProvider.WriteLine();
 
@@ -207,46 +217,119 @@ namespace LeapWoF
             outputProvider.Write("Please guess a letter: ");
             var guessedInput = inputProvider.Read();
 
+            if (string.IsNullOrEmpty(guessedInput))
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                outputProvider.WriteLine("Please enter a letter to guess.");
+                System.Threading.Thread.Sleep(750);
+                Console.ResetColor();
+                outputProvider.WriteLine();
+
+                outputProvider.WriteLine("Press any key to try again...");
+                inputProvider.Read();
+                return;
+            }
+
+            if (guessedInput.Length > 1)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                outputProvider.WriteLine("Please enter only one letter.");
+                System.Threading.Thread.Sleep(750);
+                Console.ResetColor();
+                outputProvider.WriteLine();
+
+                outputProvider.WriteLine("Press any key to try again...");
+                inputProvider.Read();
+                return;
+            }
+
+            if (!char.IsLetter(guessedInput, 0))
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                outputProvider.WriteLine("Please enter a valid letter.");
+                System.Threading.Thread.Sleep(750);
+                Console.ResetColor();
+                outputProvider.WriteLine();
+
+                outputProvider.WriteLine("Press any key to try again...");
+                inputProvider.Read();
+                return;
+            }
+
             //Take only the first character from the guessed input
-            string guess = guessedInput.Substring(0, 1);
+            string guess = guessedInput.Substring(0, 1).ToUpper();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
             outputProvider.WriteLine($"Guessed Letter is: {guess}");
-            guess = guess.ToUpper();
+            Console.ResetColor();
+            //guess = guess.ToUpper();
             if (!charGuessList.Contains(guess))
-            {               
-              if (TemporaryPuzzle.Contains(guess))
+            {
+                charGuessList.Add(guess);
+
+                if (TemporaryPuzzle.Contains(guess))
                 {
                     //Get all locations of guessed letter
                     var posList = GetAllIndicesOfGuessedLetterInChallengePhrase(guess);
-                    
+
                     //Replace underscore with matching letters
                     foreach (var pos in posList)
                     {
                         ChallengePhrase = ChallengePhrase.Substring(0, pos) + guess + ChallengePhrase.Substring(pos + 1);
-                        outputProvider.WriteLine("Here is the updated challenge phrase: " + ChallengePhrase);
+                        //outputProvider.WriteLine("Here is the updated challenge phrase: " + ChallengePhrase);
                     }
                     if (string.Equals(ChallengePhrase, TemporaryPuzzle, StringComparison.OrdinalIgnoreCase))
                     {
+                        Console.SetCursorPosition(0, 14);
+                        outputProvider.Write(ChallengePhrase);
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.SetCursorPosition(0, 21);
                         outputProvider.WriteLine("Congratulations!!! You won!");
+                        System.Threading.Thread.Sleep(750);
+                        Console.ResetColor();
+                        outputProvider.WriteLine();
                         GameState = GameState.GameOver;
+                        return;
                     }
-                    charGuessList.Add(guess);
-                    outputProvider.WriteLine("Press any key to continue...");
+                    Console.SetCursorPosition(0, 14);
+                    outputProvider.Write(ChallengePhrase);
+                    //charGuessList.Add(guess);
+                    Console.SetCursorPosition(0, 21);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    outputProvider.WriteLine($"Nice guess! '{guess}' is in the puzzle phrase!");
+                    System.Threading.Thread.Sleep(750);
+                    Console.ResetColor();
+                    outputProvider.WriteLine();
+
+                    outputProvider.WriteLine("Press any key to try again...");
                     inputProvider.Read();
                 }
                 else
                 {
                     //If letter is not in word, let player know and keep playing
-                    outputProvider.WriteLine("Hard luck, try again!");
-                    outputProvider.WriteLine("Press any key to continue...");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    outputProvider.WriteLine($"Hard luck, '{guess}' is not in the puzzle phrase.");
+                    System.Threading.Thread.Sleep(750);
+                    Console.ResetColor();
+                    outputProvider.WriteLine();
+
+                    outputProvider.WriteLine("Press any key to try again...");
                     inputProvider.Read();
                 }
-            } else
+            }
+            else
             {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 outputProvider.WriteLine("You have already guessed that letter! Please try again.");
-                outputProvider.WriteLine("Press any key to continue...");
+                System.Threading.Thread.Sleep(750);
+                Console.ResetColor();
+                outputProvider.WriteLine();
+
+                outputProvider.WriteLine("Press any key to try again...");
                 inputProvider.Read();
             }
-            
+
         }
 
         private List<int> GetAllIndicesOfGuessedLetterInChallengePhrase(string guess)
@@ -254,14 +337,15 @@ namespace LeapWoF
             int start = 0;
             int end = TemporaryPuzzle.Length;
             int at = 0;
-            int count = 0;
+            int count;
             var posList = new List<int>();
             while ((start <= end) && (at > -1))
             {
                 // start+count must be a position within the string
                 count = end - start;
                 at = TemporaryPuzzle.IndexOf(guess, start, count);
-                if (at == -1) break;
+                if (at == -1)
+                    break;
                 //Debug: Console.Write("{0} ", at);
                 posList.Add(at);
                 start = at + 1;
@@ -305,5 +389,5 @@ namespace LeapWoF
             Console.WriteLine("     (_)    \\___/(_)   \\__)\\___/(_) (_)\\____)");
             Console.ResetColor();
         }
-        }
     }
+}
